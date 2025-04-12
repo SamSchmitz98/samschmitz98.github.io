@@ -1,0 +1,82 @@
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+</head>
+<body>
+    <div id="duckContainer"></div>
+
+    <script>
+        // Example JSON files are stored in 'ducks' folder
+        const duckDataFiles = [
+            "duck1.json",
+            "duck2.json",
+            "duck3.json"
+        ];
+
+        const loadDucks = async () => {
+            const container = document.getElementById('duckContainer');
+
+            // Loop through each duck data file and display it
+            for (const file of duckDataFiles) {
+                try {
+                    console.log(`Fetching ${file}...`);  // Log fetch attempt
+                    const response = await fetch(`ducks/${file}`);
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch ${file}`);
+                    }
+
+                    const duckData = await response.json();
+                    console.log("Duck Data:", duckData);  // Log duck data to inspect it
+
+                    // Create elements for displaying the duck's information
+                    const duckDiv = document.createElement('div');
+                    const qrCanvas = document.createElement('canvas');
+                    const nameText = document.createElement('p');
+                    const idText = document.createElement('p');
+
+                    // Set text for name and ID (if available)
+                    if (duckData.name) {
+                        nameText.innerText = `Name: ${duckData.name}`;
+                    }
+                    if (duckData.id) {
+                        idText.innerText = `ID: ${duckData.id}`;
+                    }
+
+                    // Generate QR code for the duck
+                    const duckUrl = (duckData) => {
+                        const baseUrl = `http://192.168.127.104:8080/duck.html`;
+                        let params = [];
+                        if (duckData.id) params.push(`id=${duckData.id}`);
+                        if (duckData.name) params.push(`name=${encodeURIComponent(duckData.name)}`);
+                        if (duckData.fact) params.push(`fact=${encodeURIComponent(duckData.fact)}`);
+                        if (duckData.image) params.push(`image=${encodeURIComponent(duckData.image)}`);
+
+                        const urlWithParams = params.length > 0 ? `${baseUrl}?${params.join('&')}` : baseUrl;
+                        return urlWithParams;
+                    };
+
+                    // Generate QR code using the URL
+                    await QRCode.toCanvas(qrCanvas, duckUrl(duckData), (error) => {
+                        if (error) {
+                            console.error("QR Code error:", error);
+                        } else {
+                            console.log("QR Code generated!");
+                        }
+                    });
+
+                    // Append elements to the container
+                    duckDiv.appendChild(qrCanvas);
+                    duckDiv.appendChild(nameText);
+                    duckDiv.appendChild(idText);
+                    container.appendChild(duckDiv);
+                } catch (error) {
+                    console.error("Error loading duck data:", error);
+                }
+            }
+        };
+
+        // Load the ducks when the page is ready
+        loadDucks();
+    </script>
+</body>
+</html>

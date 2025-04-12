@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Duck Found!</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- New Duck Banner -->
+  <div id="new-duck-banner" style="display: none; background-color: #4CAF50; color: white; padding: 10px; border-radius: 5px; text-align: center; font-size: 18px;">
+    🦆 NEW DUCK FOUND! 🦆
+  </div>
+
+  <!-- Duck Information Container (styled as yellow box) -->
+  <div id="duckInfo" class="yellow-box">
+    <div class="card-container" id="collection"></div>
+  </div>
+
+  <a href="myducks.html">View My Ducks</a>
+
+  <script src="ducks.js"></script>
+  <script src="cardRenderer.js"></script>
+  <script src="app.js"></script>
+
+  <div id="installBanner" style="display: none;">
+    <p>🐣 Would you like to enable offline mode?</p>
+    <button id="acceptInstall">Yes</button>
+    <button id="declineInstall">No thanks</button>
+  </div>
+</body>
+</html>

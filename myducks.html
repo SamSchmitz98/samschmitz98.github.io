@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Ducks</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>My Ducks</h1>
+  <div id="collection" class="card-container"></div>
+
+  <a href="index.html">Back Home</a>
+  <br><br>
+  <button id="resetBtn">🗑️ Reset Duck Collection</button>
+
+  <script src="ducks.js"></script>
+  <script src="cardRenderer.js"></script>
+  <script>
+    const collection = document.getElementById("collection");
+    const found = JSON.parse(localStorage.getItem("myDucks") || "{}");
+
+    if (Object.keys(found).length === 0) {
+      collection.innerText = "No ducks yet!";
+    } else {
+      for (const id in found) {
+        const duck = found[id];
+
+        // Add firstFound and scans to the duck object if missing
+        duck.firstFound = new Date(duck.firstFound).toLocaleString();
+        duck.scans = duck.scans || 1;
+
+        // Use shared card renderer
+        const firstFound = new Date(duck.firstFound).toLocaleString();
+        const scans = duck.scans || 1;
+        const card = createDuckCard(duck, {
+          showStats: true,
+          firstFound,
+          scans
+        });
+        collection.appendChild(card);
+        collection.appendChild(card);
+      }
+    }
+
+    // Reset button logic
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      const confirmReset = confirm(
+        "Are you sure you want to reset your duck collection?\n\nAll saved ducks will be lost forever 🥲"
+      );
+      if (confirmReset) {
+        localStorage.removeItem("myDucks");
+        localStorage.removeItem("visited");
+        location.reload();
+      }
+    });
+  </script>
+</body>
+</html>
